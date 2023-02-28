@@ -44,11 +44,11 @@ app.get("/api/users/:id", (req, res) => {
 
 // ADD USER
 app.post("/api/users", (req, res) => {
-  const { title, author, year } = req.body; // form data from body
+  const { first_name, last_name, age, active } = req.body; // form data from body
   pool
     .query(
-      "INSERT INTO users (title,author,year) VALUES ($1,$2,$3) RETURNING *;",
-      [title, author, year]
+      "INSERT INTO users (first_name, last_name, age, active) VALUES ($1,$2,$3,$4) RETURNING *;",
+      [first_name, last_name, age, active]
     )
     .then((data) => {
       console.log(data);
@@ -60,11 +60,11 @@ app.post("/api/users", (req, res) => {
 // UPDATE USER
 app.put("/api/users/:id", (req, res) => {
   const id = req.params.id;
-  const { title, author, year } = req.body; // form data from body
+  const { first_name, last_name, age, active } = req.body; // form data from body
   pool
     .query(
-      "UPDATE users SET title=$1,author=$2,year=$3 WHERE id=$4 RETURNING *;",
-      [title, author, year, id]
+      "UPDATE users SET first_name=$1,last_name=$2,age=$3,active=$4 WHERE id=$5 RETURNING *;",
+      [first_name, last_name, age, active, id]
     )
     .then((data) => {
       console.log(data);
@@ -104,7 +104,7 @@ app.get("/api/orders/:id", (req, res) => {
     .then((data) => {
       console.log(data);
       if (data.rowCount === 0) {
-        res.status(404).json({ message: "User not found" });
+        res.status(404).json({ message: "Order not found" });
       }
       res.json(data.rows[0]);
     })
@@ -113,11 +113,11 @@ app.get("/api/orders/:id", (req, res) => {
 
 // ADD ORDER
 app.post("/api/orders", (req, res) => {
-  const { title, author, year } = req.body; // form data from body
+  const { price, user_id } = req.body; // form data from body
   pool
     .query(
-      "INSERT INTO orders (title,author,year) VALUES ($1,$2,$3) RETURNING *;",
-      [title, author, year]
+      "INSERT INTO orders (price, date, user_id) VALUES ($1,NOW(),$2) RETURNING *;",
+      [price, user_id]
     )
     .then((data) => {
       console.log(data);
@@ -129,11 +129,11 @@ app.post("/api/orders", (req, res) => {
 // UPDATE ORDER
 app.put("/api/orders/:id", (req, res) => {
   const id = req.params.id;
-  const { title, author, year } = req.body; // form data from body
+  const { price, user_id } = req.body; // form data from body
   pool
     .query(
-      "UPDATE orders SET title=$1,author=$2,year=$3 WHERE id=$4 RETURNING *;",
-      [title, author, year, id]
+      "UPDATE orders SET price=$1,date=NOW(),user_id=$2 WHERE id=$3 RETURNING *;",
+      [price, user_id, id]
     )
     .then((data) => {
       console.log(data);
